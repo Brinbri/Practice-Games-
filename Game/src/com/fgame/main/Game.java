@@ -2,6 +2,7 @@ package com.fgame.main;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
+import java.util.Random;
 import java.awt.Graphics;
 
 public class Game extends Canvas implements Runnable {
@@ -11,14 +12,21 @@ public class Game extends Canvas implements Runnable {
 	public static final int WIDTH = 640, HEIGHT = WIDTH / 12 * 9;
 
 	private Thread thread;
-	private boolean running = false;
+	private boolean running = true;
 	
+	private Random r;
 	private Handler handler;
 
 	public Game() {
+		handler = new Handler();
+		this.addKeyListener(new KeyInput(handler));
+			
 		new Window(WIDTH, HEIGHT, "First Game", this);
 		
-		handler = new Handler();
+		r = new Random();
+		handler.addObject(new Player(WIDTH/2-32, HEIGHT/2-32, ID.Player));
+		handler.addObject(new Player(WIDTH/2+64, HEIGHT/2-32, ID.Player2));
+		
 	}
 
 	public synchronized void start() {
@@ -56,7 +64,7 @@ public class Game extends Canvas implements Runnable {
 
 			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
-				System.out.println("FPS: " + frames);
+				//System.out.println("FPS: " + frames);
 				frames = 0;
 			}
 		}
@@ -76,7 +84,7 @@ public class Game extends Canvas implements Runnable {
 		
 		Graphics g = bs.getDrawGraphics();
 		
-		g.setColor(Color.green);
+		g.setColor(Color.black);
 		g.fillRect(0, 0, WIDTH, HEIGHT);
 		
 		handler.render(g);
